@@ -3,22 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Power BI Report</title>
+    <title>Open Opportunity</title>
     <style>
-        html, body {
-            height: 100%;
+        body, html {
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Prevents scrollbars */
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4;
+            overflow: hidden;
         }
+
+        #login-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #login-box input[type="password"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #login-box button {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #login-box button:hover {
+            background-color: #0056b3;
+        }
+
+        #login-box h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        #content {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
         iframe {
-            width: 100vw;  /* Full viewport width */
-            height: 100vh; /* Full viewport height */
+            width: 100%;
+            height: 100%;
             border: none;
         }
     </style>
 </head>
 <body>
-    <iframe title="Opportunities" src="https://app.powerbi.com/view?r=eyJrIjoiMDIyY2I1ZjAtNzE2NC00OTFjLTg1MGQtNmQ0ZTQ3Y2FjZTJmIiwidCI6IjQyMDBlYWJlLTU4NDQtNDgwNS04MTAzLWI0MDIyNjhiOTg0YyJ9" allowfullscreen="true"></iframe>
+    <div id="login-box">
+        <h2>Enter Password</h2>
+        <input type="password" id="password-input" placeholder="Password">
+        <button onclick="checkPassword()">Submit</button>
+    </div>
+
+    <div id="content">
+        <iframe title="Opportunities" src="https://app.powerbi.com/view?r=eyJrIjoiMDIyY2I1ZjAtNzE2NC00OTFjLTg1MGQtNmQ0ZTQ3Y2FjZTJmIiwidCI6IjQyMDBlYWJlLTU4NDQtNDgwNS04MTAzLWI0MDIyNjhiOTg0YyJ9" allowfullscreen="true"></iframe>
+    </div>
+
+    <script>
+        const password = 'Electr0lab84';
+        const authDuration = 24 * 60 * 60 * 1000;
+
+        const lastAuthTime = localStorage.getItem('lastAuthTime');
+        const currentTime = new Date().getTime();
+
+        if (lastAuthTime && (currentTime - lastAuthTime < authDuration)) {
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            document.body.style.overflow = 'auto';
+        } else {
+            localStorage.removeItem('authenticated');
+            localStorage.removeItem('lastAuthTime');
+        }
+
+        function checkPassword() {
+            const enteredPassword = document.getElementById('password-input').value;
+            if (enteredPassword === password) {
+                localStorage.setItem('authenticated', 'true'); 
+                localStorage.setItem('lastAuthTime', new Date().getTime()); 
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                document.body.style.overflow = 'auto';
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        document.getElementById('password-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        });
+    </script>
 </body>
 </html>
